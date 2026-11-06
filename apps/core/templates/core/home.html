@@ -1,0 +1,264 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="col-lg-6">
+      <span class="eyebrow"><i class="bi bi-compass"></i> EXPLORE &amp; TELL MORE</span>
+      <h1 class="hero-title">Discover Amazing<br><span class="script">Adventures with Us</span></h1>
+      <p class="lead text-muted my-3">Safaris, beach getaways, hotel bookings and air ticketing: everything you need for the perfect trip.</p>
+      <a href="{% url 'tours:packages' %}" class="btn btn-blue">Explore Packages <i class="bi bi-arrow-right ms-1"></i></a>
+    </div>
+  </div>
+</section>
+
+<!-- SEARCH BAR -->
+<div class="container search-wrap">
+  <form class="search-card" method="get" action="{% url 'tours:packages' %}">
+    <div class="row g-3 align-items-end">
+      <div class="col-md-4">
+        <label class="form-label small text-muted mb-1">Destination</label>
+        <select name="destination" class="form-select">
+          <option value="">Anywhere</option>
+          {% for d in all_destinations %}<option value="{{ d.slug }}">{{ d.name }}</option>{% endfor %}
+        </select>
+      </div>
+      <div class="col-6 col-md-3">
+        <label class="form-label small text-muted mb-1">Travel date</label>
+        <input type="date" name="date" class="form-control">
+      </div>
+      <div class="col-6 col-md-2">
+        <label class="form-label small text-muted mb-1">Travelers</label>
+        <input type="number" name="travelers" min="1" value="2" class="form-control">
+      </div>
+      <div class="col-md-3 d-grid">
+        <button class="btn btn-blue" type="submit"><i class="bi bi-search me-1"></i> Search</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<!-- FEATURE STRIP -->
+<section class="container my-5">
+  <div class="row g-4">
+    <div class="col-6 col-lg-3 feature">
+      <div class="feature-icon"><i class="bi bi-geo-alt"></i></div>
+      <div><h6>Unique Destinations</h6><p>From hidden gems to famous landmarks.</p></div>
+    </div>
+    <div class="col-6 col-lg-3 feature">
+      <div class="feature-icon"><i class="bi bi-person-check"></i></div>
+      <div><h6>Expert Guides</h6><p>Safety, fun and insider knowledge.</p></div>
+    </div>
+    <div class="col-6 col-lg-3 feature">
+      <div class="feature-icon"><i class="bi bi-sliders"></i></div>
+      <div><h6>Tailor-Made Trips</h6><p>We customize your journey.</p></div>
+    </div>
+    <div class="col-6 col-lg-3 feature">
+      <div class="feature-icon"><i class="bi bi-shield-check"></i></div>
+      <div><h6>Hassle-Free Travel</h6><p>We handle all the details.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- POPULAR DESTINATIONS -->
+<section class="container my-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="section-heading mb-0">Popular Destinations</h2>
+    <a href="{% url 'tours:destinations' %}" class="btn btn-outline-blue btn-sm">View All <i class="bi bi-arrow-right"></i></a>
+  </div>
+  <div class="row g-4">
+    {% for d in destinations %}
+    <div class="col-6 col-lg-3">
+      <a href="{% url 'tours:packages' %}?destination={{ d.slug }}" class="dest-card">
+        <img src="{{ d.image.url }}" alt="{{ d.name }}">
+        <span class="dest-badge">Featured</span>
+        <div class="dest-info">
+          <h5>{{ d.name }}</h5>
+          <div class="d-flex justify-content-between small">
+            <span><i class="bi bi-geo-alt-fill"></i> {{ d.region|default:"Kenya" }}</span>
+            {% if d.from_price %}<span>From KES {{ d.from_price|floatformat:0 }}</span>{% endif %}
+          </div>
+        </div>
+      </a>
+    </div>
+    {% empty %}
+    <p class="text-center text-muted">Destinations coming soon.</p>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- PACKAGES -->
+<section class="bg-soft py-5">
+  <div class="container">
+    <h2 class="section-heading mb-4">Popular Packages</h2>
+    <div class="row g-4">
+      {% for p in packages %}
+      <div class="col-md-6 col-lg-4">
+        <div class="card pkg-card h-100">
+          <img src="{{ p.cover_image.url }}" class="card-img-top" alt="{{ p.title }}">
+          <div class="card-body">
+            <h5>{{ p.title }}</h5>
+            <p class="text-muted small mb-2">
+              <i class="bi bi-geo-alt"></i> {{ p.destination.name }} &nbsp;·&nbsp;
+              <i class="bi bi-clock"></i> {{ p.duration_days }} day{{ p.duration_days|pluralize }}
+            </p>
+            <div class="d-flex justify-content-between align-items-center">
+              <span class="price">KES {{ p.price|floatformat:0 }}</span>
+              <a href="{% url 'tours:packages' %}" class="btn btn-brand btn-sm">View</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% empty %}
+      <p class="text-center text-muted">Packages coming soon.</p>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="container my-5">
+  <h2 class="section-heading mb-4">Our Services</h2>
+  <div class="row g-4">
+    {% for s in services %}
+    <div class="col-md-6 col-lg-4">
+      <div class="service-box h-100">
+        <i class="bi bi-compass"></i>
+        <h5>{{ s.name }}</h5>
+        <p class="text-muted small mb-0">{{ s.description|truncatewords:18 }}</p>
+      </div>
+    </div>
+    {% empty %}
+    <p class="text-center text-muted">Services coming soon.</p>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- WHY CHOOSE US -->
+<section class="bg-soft py-5" id="why-us">
+  <div class="container">
+    <h2 class="section-heading mb-4">Why Choose MORTEL ADVENTURES?</h2>
+    <div class="row g-4">
+      <div class="col-md-6 col-lg-4"><div class="why-item"><i class="bi bi-geo-alt"></i><div><h6>Unique Destinations</h6><p>From hidden gems to famous landmarks, we take you beyond the ordinary.</p></div></div></div>
+      <div class="col-md-6 col-lg-4"><div class="why-item"><i class="bi bi-person-check"></i><div><h6>Expert Guides</h6><p>Travel with professionals who ensure safety, fun and insider knowledge.</p></div></div></div>
+      <div class="col-md-6 col-lg-4"><div class="why-item"><i class="bi bi-sliders"></i><div><h6>Tailor-Made Experiences</h6><p>Adrenaline-pumping adventures or serene escapes, we customize your journey.</p></div></div></div>
+      <div class="col-md-6 col-lg-4"><div class="why-item"><i class="bi bi-shield-check"></i><div><h6>Hassle-Free Travel</h6><p>We handle all the details so you can focus on the adventure.</p></div></div></div>
+      <!-- EDIT: replace the two below with real strengths, or delete them -->
+      <div class="col-md-6 col-lg-4"><div class="why-item"><i class="bi bi-cash-coin"></i><div><h6>Transparent Pricing</h6><p>Clear quotations with no hidden surprises.</p></div></div></div>
+      <div class="col-md-6 col-lg-4"><div class="why-item"><i class="bi bi-headset"></i><div><h6>Friendly Support</h6><p>Reach us by phone or WhatsApp before, during and after your trip.</p></div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+{% if testimonials %}
+<section class="container my-5" id="reviews">
+  <h2 class="section-heading mb-4">What Our Travelers Say</h2>
+  <div class="row g-4">
+    {% for t in testimonials %}
+    <div class="col-md-6 col-lg-4">
+      <div class="testimonial h-100">
+        <div class="stars">
+          {% for i in "12345" %}<i class="bi {% if forloop.counter <= t.rating %}bi-star-fill{% else %}bi-star{% endif %}"></i>{% endfor %}
+        </div>
+        <p>“{{ t.message }}”</p>
+        <strong>{{ t.name }}</strong>
+        {% if t.location %}<small class="text-muted d-block">{{ t.location }}</small>{% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<!-- FAQ -->
+{% if faqs %}
+<section class="bg-soft py-5" id="faq">
+  <div class="container" style="max-width: 820px;">
+    <h2 class="section-heading mb-4">Frequently Asked Questions</h2>
+    <div class="accordion" id="faqAccordion">
+      {% for f in faqs %}
+      <div class="accordion-item">
+        <h3 class="accordion-header">
+          <button class="accordion-button {% if not forloop.first %}collapsed{% endif %}" type="button"
+                  data-bs-toggle="collapse" data-bs-target="#faq{{ f.pk }}">{{ f.question }}</button>
+        </h3>
+        <div id="faq{{ f.pk }}" class="accordion-collapse collapse {% if forloop.first %}show{% endif %}" data-bs-parent="#faqAccordion">
+          <div class="accordion-body">{{ f.answer|linebreaksbr }}</div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- QUOTE REQUEST -->
+<section class="container my-5" id="quote">
+  <div class="quote-card">
+    <div class="row g-4 align-items-center">
+      <div class="col-lg-5">
+        <span class="eyebrow eyebrow-light">FREE QUOTE</span>
+        <h2>Plan Your Trip With Us</h2>
+        <p>Tell us where you want to go and we'll come back with a tailor-made quotation.</p>
+        <p class="mb-0"><i class="bi bi-telephone"></i> {{ SITE.phone1 }} | {{ SITE.phone2 }}</p>
+      </div>
+      <div class="col-lg-7">
+        <form method="post" action="{% url 'contact:quote' %}" class="quote-form">
+          {% csrf_token %}
+          <div class="row g-3">
+            <div class="col-md-6">{{ quote_form.name }}</div>
+            <div class="col-md-6">{{ quote_form.phone }}</div>
+            <div class="col-12">{{ quote_form.email }}</div>
+            <div class="col-md-6">{{ quote_form.destination }}</div>
+            <div class="col-6 col-md-3">{{ quote_form.travel_date }}</div>
+            <div class="col-6 col-md-3">{{ quote_form.travelers }}</div>
+            <div class="col-12">{{ quote_form.message }}</div>
+            <div class="col-12 d-grid"><button type="submit" class="btn btn-brand btn-lg">Request a Quote</button></div>
+          </div>
+          <datalist id="dest-list">{% for d in all_destinations %}<option value="{{ d.name }}">{% endfor %}</datalist>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FIND US -->
+<section class="bg-soft py-5" id="find-us">
+  <div class="container">
+    <h2 class="section-heading mb-4">Find Us</h2>
+    <div class="row g-4">
+      <div class="col-lg-5">
+        <div class="contact-box">
+          <p><i class="bi bi-geo-alt"></i> {{ SITE.address }}</p>
+          <p><i class="bi bi-telephone"></i> <a href="tel:{{ SITE.phone1 }}">{{ SITE.phone1 }}</a> | <a href="tel:{{ SITE.phone2 }}">{{ SITE.phone2 }}</a></p>
+          <p><i class="bi bi-envelope"></i> <a href="mailto:{{ SITE.email }}">{{ SITE.email }}</a></p>
+          <p><i class="bi bi-clock"></i> {{ SITE.hours }}</p>
+          <a href="https://wa.me/{{ SITE.whatsapp }}" target="_blank" rel="noopener" class="btn btn-success rounded-pill"><i class="bi bi-whatsapp"></i> Chat on WhatsApp</a>
+        </div>
+      </div>
+      <div class="col-lg-7">
+        <div class="map-wrap">
+          <iframe src="https://www.google.com/maps?q={{ SITE.map_query|urlencode }}&amp;output=embed"
+                  loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade"
+                  title="MORTEL ADVENTURES location"></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- CTA -->
+<section class="container mb-5">
+  <div class="cta-card">
+    <span class="eyebrow eyebrow-light">LET'S GO!</span>
+    <h2>Your Next Adventure Awaits!</h2>
+    <p>Discover breathtaking places and create unforgettable memories.</p>
+    <a href="{% url 'bookings:booking' %}" class="btn btn-light rounded-pill px-4 fw-semibold">Plan Your Trip <i class="bi bi-arrow-right"></i></a>
+  </div>
+</section>
+
+{% endblock %}
