@@ -1,4 +1,7 @@
 {% extends 'base.html' %}
+{% load static %}
+
+
 
 {% block content %}
 
@@ -8,7 +11,7 @@
     <div class="col-lg-6">
       <span class="eyebrow"><i class="bi bi-compass"></i> EXPLORE &amp; TELL MORE</span>
       <h1 class="hero-title">Discover Amazing<br><span class="script">Adventures with Us</span></h1>
-      <p class="lead text-muted my-3">Safaris, beach getaways, hotel bookings and air ticketing: everything you need for the perfect trip.</p>
+      <p class="lead text-muted my-3"> Find the best Safaris, beach getaways, hotel bookings and air ticketing: everything you need for the perfect trip.</p>
       <a href="{% url 'tours:packages' %}" class="btn btn-blue">Explore Packages <i class="bi bi-arrow-right ms-1"></i></a>
     </div>
   </div>
@@ -106,7 +109,7 @@
             </p>
             <div class="d-flex justify-content-between align-items-center">
               <span class="price">KES {{ p.price|floatformat:0 }}</span>
-              <a href="{% url 'tours:packages' %}" class="btn btn-brand btn-sm">View</a>
+              <a href="{% url 'tours:package_detail' p.slug %}" class="btn btn-brand btn-sm">View</a>
             </div>
           </div>
         </div>
@@ -136,27 +139,147 @@
   </div>
 </section>
 
-<!-- WHY CHOOSE US -->
-<section class="bg-soft py-5" id="why-us">
+
+<!-- ABOUT US -->
+<section class="about-section" id="about">
   <div class="container">
-    <h2 class="section-heading mb-4">Why Choose MORTEL ADVENTURES?</h2>
-    <div class="row g-4">
-      <div class="col-md-6 col-lg-4"><div class="why-item"><i class="bi bi-geo-alt"></i><div><h6>Unique Destinations</h6><p>From hidden gems to famous landmarks, we take you beyond the ordinary.</p></div></div></div>
-      <div class="col-md-6 col-lg-4"><div class="why-item"><i class="bi bi-person-check"></i><div><h6>Expert Guides</h6><p>Travel with professionals who ensure safety, fun and insider knowledge.</p></div></div></div>
-      <div class="col-md-6 col-lg-4"><div class="why-item"><i class="bi bi-sliders"></i><div><h6>Tailor-Made Experiences</h6><p>Adrenaline-pumping adventures or serene escapes, we customize your journey.</p></div></div></div>
-      <div class="col-md-6 col-lg-4"><div class="why-item"><i class="bi bi-shield-check"></i><div><h6>Hassle-Free Travel</h6><p>We handle all the details so you can focus on the adventure.</p></div></div></div>
-      <!-- EDIT: replace the two below with real strengths, or delete them -->
-      <div class="col-md-6 col-lg-4"><div class="why-item"><i class="bi bi-cash-coin"></i><div><h6>Transparent Pricing</h6><p>Clear quotations with no hidden surprises.</p></div></div></div>
-      <div class="col-md-6 col-lg-4"><div class="why-item"><i class="bi bi-headset"></i><div><h6>Friendly Support</h6><p>Reach us by phone or WhatsApp before, during and after your trip.</p></div></div></div>
+    <div class="row align-items-center g-5">
+
+      <div class="col-lg-6">
+        <div class="about-image-wrapper">
+          <img src="{% static 'core/assets/img/about-adventure.jpg' %}"
+               alt="MORTEL ADVENTURES travel experiences" class="about-image" loading="lazy">
+          <div class="about-badge">
+            <i class="bi bi-compass"></i>
+            <div>
+              <strong>MORTEL ADVENTURES</strong>
+              <small>Explore &amp; Tell More</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-6">
+        <span class="eyebrow">ABOUT MORTEL ADVENTURES</span>
+        <h2 class="about-title">Discover More. <span>Experience More.</span></h2>
+
+        <p class="text-muted">
+          MORTEL ADVENTURES is a travel and adventure company dedicated to creating
+          memorable journeys and exceptional travel experiences.
+        </p>
+        <p class="text-muted">
+          From exciting wildlife safaris and relaxing beach getaways to hiking adventures,
+          hotel reservations and air ticketing, we bring together everything you need for
+          a seamless travel experience.
+        </p>
+        <p class="text-muted">
+          Whether you are planning a family holiday, a romantic getaway, a group adventure
+          or a personalized safari, we are here to help you explore beautiful destinations
+          and create unforgettable memories.
+        </p>
+
+        <div class="row g-3 mt-2">
+          <div class="col-md-6">
+            <div class="about-info-card">
+              <i class="bi bi-bullseye"></i>
+              <h5>Our Mission</h5>
+              <p>Making every journey memorable and enjoyable through exceptional travel experiences, personalized services and unforgettable adventures.</p>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="about-info-card">
+              <i class="bi bi-eye"></i>
+              <h5>Our Vision</h5>
+              <p>Inspiring more people to explore the world, discover beautiful destinations and create lifelong travel memories.</p>
+            </div>
+          </div>
+        </div>
+
+        <a href="{% url 'contact:contact' %}" class="btn btn-brand mt-4">
+          Get In Touch <i class="bi bi-arrow-right ms-1"></i>
+        </a>
+      </div>
+
     </div>
   </div>
 </section>
+
+<!-- WHY CHOOSE US -->
+<section class="why-section" id="why-us">
+  <div class="container">
+    <div class="row align-items-center g-5">
+
+      <div class="col-lg-6">
+        <span class="why-label">WHY TRAVEL WITH US</span>
+        <h2 class="why-title">Why Choose <span>MORTEL ADVENTURES?</span></h2>
+        <p class="text-muted mb-4">
+          We believe every journey should be more than just a trip. We bring together
+          exceptional destinations, personalized services and unforgettable experiences
+          to make your travel dreams a reality.
+        </p>
+
+        <div class="row g-4">
+          <div class="col-sm-6">
+            <div class="why-feature">
+              <div class="why-icon"><i class="bi bi-geo-alt"></i></div>
+              <div>
+                <h5>Wide Range of Choices</h5>
+                <p>Explore breathtaking destinations, wildlife safaris, beaches and exciting travel experiences.</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="why-feature">
+              <div class="why-icon"><i class="bi bi-hand-thumbs-up"></i></div>
+              <div>
+                <h5>Trusted Travel Services</h5>
+                <p>Enjoy reliable travel arrangements with a team committed to your satisfaction.</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="why-feature">
+              <div class="why-icon"><i class="bi bi-wallet2"></i></div>
+              <div>
+                <h5>Flexible &amp; Easy Booking</h5>
+                <p>A smooth booking experience with arrangements designed around your needs.</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="why-feature">
+              <div class="why-icon"><i class="bi bi-percent"></i></div>
+              <div>
+                <h5>Exclusive Travel Deals</h5>
+                <p>Discover exciting travel packages and great value offers for your next adventure.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-6">
+        <div class="why-card">
+          <img src="{% static 'images/ctaa.jpeg' %}" alt="Discover amazing travel experiences with MORTEL ADVENTURES" loading="lazy">
+          <div class="why-overlay">
+            <span>LET'S GO!</span>
+            <h3>Your Next Adventure Awaits!</h3>
+            <p>Discover breathtaking destinations and create unforgettable memories with MORTEL ADVENTURES.</p>
+            <a href="{% url 'core:home' %}#quote" class="why-btn">Plan Your Trip <i class="bi bi-arrow-right"></i></a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
 
 <!-- TESTIMONIALS -->
 {% if testimonials %}
 <section class="container my-5" id="reviews">
   <h2 class="section-heading mb-4">What Our Travelers Say</h2>
-  <div class="row g-4">
+<div class="row g-4">
     {% for t in testimonials %}
     <div class="col-md-6 col-lg-4">
       <div class="testimonial h-100">
@@ -247,17 +370,6 @@
         </div>
       </div>
     </div>
-  </div>
-</section>
-
-
-<!-- CTA -->
-<section class="container mb-5">
-  <div class="cta-card">
-    <span class="eyebrow eyebrow-light">LET'S GO!</span>
-    <h2>Your Next Adventure Awaits!</h2>
-    <p>Discover breathtaking places and create unforgettable memories.</p>
-    <a href="{% url 'bookings:booking' %}" class="btn btn-light rounded-pill px-4 fw-semibold">Plan Your Trip <i class="bi bi-arrow-right"></i></a>
   </div>
 </section>
 

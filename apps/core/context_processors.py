@@ -10,10 +10,10 @@ def site_info(request):
             'phone1': '0791818170',
             'phone2': '0711191480',
             'email': 'morteladventures@gmail.com',
-            'whatsapp': '254791818170',                  # CHECK: international format, no + sign
-            'address': 'Add your office address here',   # EDIT
+            'whatsapp': '254793079569',                  
+            'address': '50504-00100',  
             'hours': 'Mon–Sat: 8:00 AM – 6:00 PM',       # EDIT
-            'map_query': 'Nairobi, Kenya',               # EDIT: use your office address
+            'map_query': 'Imara Daima, Nairobi, Kenya',               # EDIT: use your office address
             'facebook': '#', 'instagram': '#', 'tiktok': '#',
         },
         'footer_services': Service.objects.filter(is_active=True)[:5],

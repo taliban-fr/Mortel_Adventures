@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block title %}Destinations | MORTEL ADVENTURES{% endblock %}
+
+{% block content %}
+<section class="page-header">
+  <div class="container">
+    <h1>Destinations</h1>
+    <p>Hidden gems and famous landmarks, pick where your next adventure begins.</p>
+  </div>
+</section>
+
+<section class="container my-5">
+  <div class="row g-4">
+    {% for d in destinations %}
+    <div class="col-12 col-md-6 col-lg-4">
+      <a href="{% url 'tours:packages' %}?destination={{ d.slug }}" class="dest-card">
+        <img src="{{ d.image.url }}" alt="{{ d.name }}" loading="lazy">
+        <span class="dest-badge">{{ d.package_count }} package{{ d.package_count|pluralize }}</span>
+        <div class="dest-info">
+          <h5>{{ d.name }}</h5>
+          <p class="small mb-1 opacity-75">{{ d.description|truncatewords:10 }}</p>
+          <div class="d-flex justify-content-between small">
+            <span><i class="bi bi-geo-alt-fill"></i> {{ d.region|default:"Kenya" }}</span>
+            {% if d.from_price %}<span>From KES {{ d.from_price|floatformat:0 }}</span>{% endif %}
+          </div>
+        </div>
+      </a>
+    </div>
+    {% empty %}
+    <p class="text-center text-muted">Destinations will be listed here soon.</p>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

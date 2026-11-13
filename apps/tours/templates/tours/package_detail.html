@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% block title %}{{ package.title }} | MORTEL ADVENTURES{% endblock %}
+
+{% block content %}
+<section class="page-header">
+  <div class="container">
+    <p class="mb-1"><a href="{% url 'tours:packages' %}" class="text-white-50 text-decoration-none">← All packages</a></p>
+    <h1>{{ package.title }}</h1>
+    <p><i class="bi bi-geo-alt"></i> {{ package.destination.name }} &nbsp;·&nbsp;
+       <i class="bi bi-clock"></i> {{ package.duration_days }} day{{ package.duration_days|pluralize }}</p>
+  </div>
+</section>
+
+<section class="container my-5">
+  <div class="row g-4">
+
+    <div class="col-lg-8">
+      <img src="{{ package.cover_image.url }}" alt="{{ package.title }}" class="detail-cover">
+
+      {% if package.images.all %}
+      <div class="row g-2 mt-1">
+        {% for img in package.images.all %}
+        <div class="col-6 col-md-4">
+          <img src="{{ img.image.url }}" alt="{{ img.caption|default:package.title }}" class="detail-thumb" loading="lazy">
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <h3 class="section-heading mt-5 mb-3">About this package</h3>
+      <p class="text-muted">{{ package.description|linebreaksbr }}</p>
+    </div>
+
+    <div class="col-lg-4">
+      <div class="book-card">
+        <p class="text-muted small mb-0">Price per person</p>
+        <p class="price fs-3 mb-3">KES {{ package.price|floatformat:0 }}</p>
+
+        <ul class="meta-list">
+          <li><i class="bi bi-geo-alt"></i> {{ package.destination.name }}</li>
+          <li><i class="bi bi-clock"></i> {{ package.duration_days }} day{{ package.duration_days|pluralize }}</li>
+          {% if package.service %}<li><i class="bi bi-compass"></i> {{ package.service.name }}</li>{% endif %}
+          {% if package.slots_available > 0 %}<li><i class="bi bi-people"></i> {{ package.slots_available }} slot{{ package.slots_available|pluralize }} available</li>{% endif %}
+        </ul>
+
+        <div class="d-grid gap-2 mt-3">
+          <a href="{% url 'bookings:booking' %}?package={{ package.pk }}" class="btn btn-brand btn-lg">Book This Package</a>
+          <a href="https://wa.me/{{ SITE.whatsapp }}?text=Hello%2C%20I%20am%20interested%20in%20{{ package.title|urlencode }}"
+             target="_blank" rel="noopener" class="btn btn-success"><i class="bi bi-whatsapp"></i> Ask on WhatsApp</a>
+          <a href="tel:{{ SITE.phone1 }}" class="btn btn-outline-blue"><i class="bi bi-telephone"></i> Call {{ SITE.phone1 }}</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% if related %}
+  <h3 class="section-heading mt-5 mb-4">More in {{ package.destination.name }}</h3>
+  <div class="row g-4">
+    {% for p in related %}
+    <div class="col-md-6 col-lg-4">
+      <div class="card pkg-card h-100">
+        <a href="{% url 'tours:package_detail' p.slug %}"><img src="{{ p.cover_image.url }}" class="card-img-top" alt="{{ p.title }}" loading="lazy"></a>
+        <div class="card-body">
+          <h5>{{ p.title }}</h5>
+          <span class="price">KES {{ p.price|floatformat:0 }}</span>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+</section>
+{% endblock %}
