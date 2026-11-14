@@ -1,0 +1,14 @@
+{% extends 'emails/base_email.html' %}
+{% block content %}
+<p><strong>New {{ enquiry.get_enquiry_type_display|lower }}</strong></p>
+<p>
+  <strong>Name:</strong> {{ enquiry.name }}<br>
+  <strong>Phone:</strong> {{ enquiry.phone }}<br>
+  <strong>Email:</strong> {{ enquiry.email|default:"not given" }}<br>
+  {% if enquiry.destination %}<strong>Destination:</strong> {{ enquiry.destination }}<br>{% endif %}
+  {% if enquiry.travel_date %}<strong>Travel date:</strong> {{ enquiry.travel_date|date:"j F Y" }}<br>{% endif %}
+  {% if enquiry.enquiry_type == 'quote' %}<strong>Travelers:</strong> {{ enquiry.travelers }}<br>{% endif %}
+  {% if enquiry.message %}<strong>Message:</strong><br>{{ enquiry.message|linebreaksbr }}{% endif %}
+</p>
+<p><a href="{{ SITE_URL }}{% url 'admin:contact_enquiry_change' enquiry.pk %}" style="color:#1646B2;">Open in admin</a></p>
+{% endblock %}

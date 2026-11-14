@@ -49,3 +49,26 @@ class PackageImage(models.Model):
     def __str__(self):
         return f"{self.package.title} photo"
 
+class GalleryImage(models.Model):
+    CATEGORY_CHOICES = [
+        ('safari', 'Safari'),
+        ('beach', 'Beach'),
+        ('hiking', 'Hiking & Day Trips'),
+        ('hotels', 'Hotels'),
+        ('team', 'Team Building'),
+        ('other', 'Other'),
+    ]
+
+    image = models.ImageField(upload_to='gallery/photos/')
+    caption = models.CharField(max_length=150, blank=True)
+    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES, default='other')
+    order = models.PositiveIntegerField(default=0, help_text='Lower numbers appear first')
+    is_published = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['order', '-created_at']
+        verbose_name = 'gallery photo'
+
+    def __str__(self):
+        return self.caption or f"Photo {self.pk}"

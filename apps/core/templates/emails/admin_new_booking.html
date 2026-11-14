@@ -1,0 +1,16 @@
+{% extends 'emails/base_email.html' %}
+{% block content %}
+<p><strong>New booking request {{ booking.reference }}</strong></p>
+<p>
+  <strong>Name:</strong> {{ booking.full_name }}<br>
+  <strong>Phone:</strong> {{ booking.phone }}<br>
+  <strong>Email:</strong> {{ booking.email|default:"not given" }}<br>
+  {% if booking.package %}<strong>Package:</strong> {{ booking.package.title }}<br>{% endif %}
+  {% if booking.service %}<strong>Service:</strong> {{ booking.service.name }}<br>{% endif %}
+  <strong>Travel date:</strong> {{ booking.travel_date|date:"j F Y" }}<br>
+  <strong>Travelers:</strong> {{ booking.travelers }}<br>
+  {% if booking.total_price %}<strong>Estimated total:</strong> KES {{ booking.total_price|floatformat:0 }}<br>{% endif %}
+  {% if booking.special_requests %}<strong>Requests:</strong> {{ booking.special_requests }}{% endif %}
+</p>
+<p><a href="{{ SITE_URL }}{% url 'admin:bookings_booking_change' booking.pk %}" style="color:#1646B2;">Open in admin</a></p>
+{% endblock %}

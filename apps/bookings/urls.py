@@ -21,4 +21,5 @@ from . import views
 app_name = 'bookings'
 urlpatterns = [
     path('', views.booking, name='booking'),
+    path('success/<str:reference>/', views.booking_success, name='success'),
 ]

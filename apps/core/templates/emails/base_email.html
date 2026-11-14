@@ -1,0 +1,20 @@
+<div style="background:#f3f6fd; padding:24px 12px; font-family:Arial,Helvetica,sans-serif;">
+  <table align="center" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px; background:#ffffff; border-radius:12px;">
+    <tr>
+      <td style="background:#1646B2; padding:20px 24px; color:#ffffff; font-size:20px; font-weight:bold; border-radius:12px 12px 0 0;">
+        MORTEL <span style="color:#F28C18;">ADVENTURES</span>
+        <div style="font-size:12px; font-weight:normal;">{{ SITE.tagline }}</div>
+      </td>
+    </tr>
+    <tr>
+      <td style="padding:24px; color:#20252D; font-size:15px; line-height:1.6;">
+        {% block content %}{% endblock %}
+      </td>
+    </tr>
+    <tr>
+      <td style="background:#f3f6fd; padding:16px 24px; color:#6b7280; font-size:12px; border-radius:0 0 12px 12px;">
+        {{ SITE.phone1 }} | {{ SITE.phone2 }} · {{ SITE.email }}<br>{{ SITE.address }}
+      </td>
+    </tr>
+  </table>
+</div>

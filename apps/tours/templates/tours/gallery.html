@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% block title %}Gallery | MORTEL ADVENTURES{% endblock %}
+
+{% block content %}
+<section class="page-header">
+  <div class="container">
+    <h1>Photo Gallery</h1>
+    <p>A glimpse of the adventures, destinations and moments we create.</p>
+  </div>
+</section>
+
+<section class="container my-5">
+
+  {% if images %}
+  <div class="gallery-filters">
+    <button type="button" class="filter-btn active" data-filter="all">All</button>
+    {% for value, label in categories %}
+    <button type="button" class="filter-btn" data-filter="{{ value }}">{{ label }}</button>
+    {% endfor %}
+  </div>
+
+  <div class="gallery-grid">
+    {% for img in images %}
+    <a href="{{ img.image.url }}" class="gallery-item" data-category="{{ img.category }}" data-caption="{{ img.caption }}">
+      <img src="{{ img.image.url }}" alt="{{ img.caption|default:'MORTEL ADVENTURES gallery photo' }}" loading="lazy">
+      {% if img.caption %}<span class="gallery-caption">{{ img.caption }}</span>{% endif %}
+    </a>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p class="text-center text-muted">Photos will be added here soon.</p>
+  {% endif %}
+
+  <div class="text-center mt-5">
+    <h4 class="fw-bold">Want to create memories like these?</h4>
+    <a href="{% url 'bookings:booking' %}" class="btn btn-brand btn-lg mt-2">Book Your Adventure</a>
+  </div>
+</section>
+
+<!-- Lightbox -->
+<div class="modal fade" id="lightbox" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-xl">
+    <div class="modal-content bg-transparent border-0">
+      <button type="button" class="btn-close btn-close-white ms-auto mb-2" data-bs-dismiss="modal" aria-label="Close"></button>
+      <div class="lightbox-body">
+        <button type="button" class="lb-nav lb-prev" id="lbPrev" aria-label="Previous photo"><i class="bi bi-chevron-left"></i></button>
+        <img id="lbImg" src="" alt="">
+        <button type="button" class="lb-nav lb-next" id="lbNext" aria-label="Next photo"><i class="bi bi-chevron-right"></i></button>
+      </div>
+      <p id="lbCaption" class="text-white text-center mt-2 mb-0"></p>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  var items = Array.prototype.slice.call(document.querySelectorAll('.gallery-item'));
+  var buttons = document.querySelectorAll('.filter-btn');
+  var modalEl = document.getElementById('lightbox');
+  var modal = new bootstrap.Modal(modalEl);
+  var img = document.getElementById('lbImg');
+  var cap = document.getElementById('lbCaption');
+  var current = 0;
+
+  function visible() {
+    return items.filter(function (el) { return el.style.display !== 'none'; });
+  }
+
+  function show(list, index) {
+    if (!list.length) return;
+    current = (index + list.length) % list.length;
+    var el = list[current];
+    img.src = el.getAttribute('href');
+    img.alt = el.dataset.caption || '';
+    cap.textContent = el.dataset.caption || '';
+  }
+
+  buttons.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      buttons.forEach(function (b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      var f = btn.dataset.filter;
+      items.forEach(function (el) {
+        el.style.display = (f === 'all' || el.dataset.category === f) ? '' : 'none';
+      });
+    });
+  });
+
+  items.forEach(function (el) {
+    el.addEventListener('click', function (e) {
+      e.preventDefault();
+      var list = visible();
+      show(list, list.indexOf(el));
+      modal.show();
+    });
+  });
+
+  document.getElementById('lbPrev').addEventListener('click', function () { show(visible(), current - 1); });
+  document.getElementById('lbNext').addEventListener('click', function () { show(visible(), current + 1); });
+
+  document.addEventListener('keydown', function (e) {
+    if (!modalEl.classList.contains('show')) return;
+    if (e.key === 'ArrowLeft') show(visible(), current - 1);
+    if (e.key === 'ArrowRight') show(visible(), current + 1);
+  });
+});
+</script>
+{% endblock %}

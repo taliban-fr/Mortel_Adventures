@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}My Profile | MORTEL ADVENTURES{% endblock %}
+
+{% block content %}
+<section class="page-header">
+  <div class="container"><h1>My Profile</h1><p>Keep your details up to date.</p></div>
+</section>
+
+<section class="container my-5">
+  <div class="auth-card wide">
+    <form method="post" class="booking-card" novalidate>
+      {% csrf_token %}
+      {% if form.non_field_errors %}<div class="alert alert-danger">{{ form.non_field_errors }}</div>{% endif %}
+      <div class="row g-3">
+        {% for field in form %}
+        <div class="{% if field.name == 'phone' %}col-12{% else %}col-md-6{% endif %}">
+          <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+          {{ field }}
+          {% for e in field.errors %}<div class="text-danger small mt-1">{{ e }}</div>{% endfor %}
+        </div>
+        {% endfor %}
+        <div class="col-12">
+          <label class="form-label">Email</label>
+          <input type="email" class="form-control" value="{{ user.email }}" disabled>
+          <div class="form-text">Your email is your login. To change it, please contact us.</div>
+        </div>
+        <div class="col-12 d-grid"><button type="submit" class="btn btn-brand btn-lg">Save Changes</button></div>
+      </div>
+    </form>
+    <p class="text-center mt-3"><a href="{% url 'accounts:password_change' %}">Change password</a></p>
+  </div>
+</section>
+{% endblock %}

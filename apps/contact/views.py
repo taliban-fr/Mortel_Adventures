@@ -1,14 +1,24 @@
 from django.contrib import messages
-from django.http import HttpResponse
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views.decorators.http import require_POST
 
-from .forms import QuoteForm
+from .forms import ContactForm, QuoteForm
 
 
 def contact(request):
-    return HttpResponse("Contact")
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            if not form.cleaned_data.get('website'):  # bots fill the hidden field, so skip saving
+                enquiry = form.save(commit=False)
+                enquiry.enquiry_type = 'general'
+                enquiry.save()
+            messages.success(request, "Thank you! Your message has been sent. We'll get back to you shortly.")
+            return redirect('contact:contact')
+    else:
+        form = ContactForm()
+    return render(request, 'contact/contact.html', {'form': form})
 
 
 @require_POST

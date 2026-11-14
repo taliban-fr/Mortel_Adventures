@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% block title %}Booking {{ booking.reference }} | MORTEL ADVENTURES{% endblock %}
+
+{% block content %}
+<section class="page-header">
+  <div class="container">
+    <p class="mb-1"><a href="{% url 'accounts:dashboard' %}" class="text-white-50 text-decoration-none">← My dashboard</a></p>
+    <h1>Booking {{ booking.reference }}</h1>
+    <span class="status-pill status-{{ booking.status }}">{{ booking.get_status_display }}</span>
+  </div>
+</section>
+
+<section class="container my-5" style="max-width: 720px;">
+  <div class="booking-card">
+    <ul class="meta-list">
+      {% if booking.package %}<li><i class="bi bi-map"></i> {{ booking.package.title }} · {{ booking.package.destination.name }}</li>{% endif %}
+      {% if booking.service %}<li><i class="bi bi-compass"></i> {{ booking.service.name }}</li>{% endif %}
+      <li><i class="bi bi-calendar-event"></i> {{ booking.travel_date|date:"j F Y" }}</li>
+      <li><i class="bi bi-people"></i> {{ booking.travelers }} traveler{{ booking.travelers|pluralize }}</li>
+      {% if booking.total_price %}<li><i class="bi bi-cash-coin"></i> Estimated total: KES {{ booking.total_price|floatformat:0 }}</li>{% endif %}
+      <li><i class="bi bi-telephone"></i> {{ booking.phone }}</li>
+      {% if booking.email %}<li><i class="bi bi-envelope"></i> {{ booking.email }}</li>{% endif %}
+      {% if booking.special_requests %}<li><i class="bi bi-chat-text"></i> {{ booking.special_requests }}</li>{% endif %}
+      <li><i class="bi bi-clock-history"></i> Requested {{ booking.created_at|date:"j M Y, H:i" }}</li>
+    </ul>
+
+    <hr class="my-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h5 class="fw-bold mb-0">Payment</h5>
+      <span class="status-pill pay-{{ booking.payment_status }}">{{ booking.payment_status|title }}</span>
+    </div>
+
+    <div class="row g-2 text-center">
+      <div class="col-4"><div class="stat-card"><h3 class="fs-6">{% if booking.total_price %}KES {{ booking.total_price|floatformat:0 }}{% else %}—{% endif %}</h3><small>Total</small></div></div>
+      <div class="col-4"><div class="stat-card"><h3 class="fs-6">KES {{ booking.amount_paid|floatformat:0 }}</h3><small>Paid</small></div></div>
+      <div class="col-4"><div class="stat-card"><h3 class="fs-6">{% if booking.balance is not None %}KES {{ booking.balance|floatformat:0 }}{% else %}—{% endif %}</h3><small>Balance</small></div></div>
+    </div>
+
+    {% if booking.payments.all %}
+    <div class="table-responsive mt-3">
+      <table class="table table-sm align-middle mb-0">
+        <thead><tr><th>Date</th><th>Method</th><th>Code</th><th class="text-end">Amount</th><th>Status</th></tr></thead>
+        <tbody>
+          {% for p in booking.payments.all %}
+          <tr>
+            <td>{{ p.paid_at|date:"j M Y" }}</td>
+            <td>{{ p.get_method_display }}</td>
+            <td>{{ p.transaction_code|default:"—" }}</td>
+            <td class="text-end">KES {{ p.amount|floatformat:0 }}</td>
+            <td>{{ p.get_status_display }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% endif %}
+
+    {% if booking.status == 'confirmed' and booking.payment_status != 'paid' %}
+    <div class="help-card mt-3 small"><strong>How to pay</strong><br>{{ SITE.payment_info }}</div>
+    {% elif booking.status == 'pending' %}
+    <p class="small text-muted mt-3 mb-0">We'll share payment details once your booking is confirmed.</p>
+    {% endif %}
+
+    <div class="d-flex gap-2 flex-wrap mt-4">
+      <a href="https://wa.me/{{ SITE.whatsapp }}?text=Hello%2C%20my%20booking%20reference%20is%20{{ booking.reference }}"
+         target="_blank" rel="noopener" class="btn btn-success"><i class="bi bi-whatsapp"></i> Message us</a>
+      {% if booking.status == 'pending' %}
+      <form method="post" action="{% url 'accounts:cancel_booking' booking.reference %}"
+            onsubmit="return confirm('Cancel this booking request?');">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-outline-danger">Cancel request</button>
+      </form>
+      {% endif %}
+    </div>
+  </div>
+</section>
+{% endblock %}

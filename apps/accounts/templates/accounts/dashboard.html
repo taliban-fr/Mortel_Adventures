@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block title %}My Dashboard | MORTEL ADVENTURES{% endblock %}
+
+{% block content %}
+<section class="page-header">
+  <div class="container">
+    <h1>Hello, {{ user.first_name|default:user.username }}!</h1>
+    <p>Manage your bookings and account details.</p>
+  </div>
+</section>
+
+<section class="container my-5">
+  <div class="row g-3 mb-4">
+    <div class="col-4"><div class="stat-card"><h3>{{ total }}</h3><small>Total</small></div></div>
+    <div class="col-4"><div class="stat-card"><h3>{{ pending }}</h3><small>Pending</small></div></div>
+    <div class="col-4"><div class="stat-card"><h3>{{ confirmed }}</h3><small>Confirmed</small></div></div>
+  </div>
+
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h3 class="section-heading mb-0">My Bookings</h3>
+    <a href="{% url 'bookings:booking' %}" class="btn btn-brand btn-sm">New Booking</a>
+  </div>
+
+  {% for b in bookings %}
+  <div class="booking-row">
+    <div>
+      <strong>{{ b.package.title|default:b.service.name }}</strong><br>
+      <small class="text-muted">
+        {{ b.reference }} · {{ b.travel_date|date:"j M Y" }} · {{ b.travelers }} traveler{{ b.travelers|pluralize }}
+      </small>
+    </div>
+    <div class="d-flex align-items-center gap-3">
+      <span class="status-pill status-{{ b.status }}">{{ b.get_status_display }}</span>
+      <a href="{% url 'accounts:booking_detail' b.reference %}" class="btn btn-outline-blue btn-sm">View</a>
+    </div>
+  </div>
+  {% empty %}
+  <div class="booking-card text-center">
+    <p class="text-muted mb-3">You haven't made any bookings yet.</p>
+    <a href="{% url 'tours:packages' %}" class="btn btn-brand">Browse Packages</a>
+  </div>
+  {% endfor %}
+
+  <div class="mt-4 d-flex gap-2 flex-wrap">
+    <a href="{% url 'accounts:profile' %}" class="btn btn-outline-blue btn-sm"><i class="bi bi-person"></i> Edit profile</a>
+    <a href="{% url 'accounts:password_change' %}" class="btn btn-outline-blue btn-sm"><i class="bi bi-key"></i> Change password</a>
+  </div>
+</section>
+{% endblock %}

@@ -2,7 +2,7 @@ from django.db.models import Count, Min, Q
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 
-from .models import Destination, Package, Service
+from .models import Destination, GalleryImage, Package, Service
 
 # Create your views here.
 
@@ -50,4 +50,8 @@ def package_detail(request, slug):
     return render(request, 'tours/package_detail.html', {'package': package, 'related': related})
 
 
-def gallery(request): return HttpResponse("Gallery")
+def gallery(request):
+    images = GalleryImage.objects.filter(is_published=True)
+    used = set(images.values_list('category', flat=True))
+    categories = [(value, label) for value, label in GalleryImage.CATEGORY_CHOICES if value in used]
+    return render(request, 'tours/gallery.html', {'images': images, 'categories': categories})

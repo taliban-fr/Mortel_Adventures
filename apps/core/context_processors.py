@@ -12,9 +12,10 @@ def site_info(request):
             'email': 'morteladventures@gmail.com',
             'whatsapp': '254793079569',                  
             'address': '50504-00100',  
-            'hours': 'Mon–Sat: 8:00 AM – 6:00 PM',       # EDIT
-            'map_query': 'Imara Daima, Nairobi, Kenya',               # EDIT: use your office address
+            'hours': 'Mon–Sat: 8:00 AM – 6:00 PM',       
+            'map_query': 'Imara Daima, Nairobi, Kenya',               
             'facebook': '#', 'instagram': '#', 'tiktok': '#',
+            'payment_info': 'Send Money 0793079569',
         },
         'footer_services': Service.objects.filter(is_active=True)[:5],
     }

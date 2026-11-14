@@ -1,0 +1,18 @@
+{% extends 'emails/base_email.html' %}
+{% block content %}
+<p>Hello {{ booking.full_name }},</p>
+<p>Thank you for your booking request. We have received it, and our team will contact you to confirm availability and payment details.</p>
+<p style="background:#f3f6fd; padding:12px 16px; border-radius:8px;">
+  <strong>Reference:</strong> {{ booking.reference }}<br>
+  {% if booking.package %}<strong>Package:</strong> {{ booking.package.title }}<br>{% endif %}
+  {% if booking.service %}<strong>Service:</strong> {{ booking.service.name }}<br>{% endif %}
+  <strong>Travel date:</strong> {{ booking.travel_date|date:"j F Y" }}<br>
+  <strong>Travelers:</strong> {{ booking.travelers }}
+  {% if booking.total_price %}<br><strong>Estimated total:</strong> KES {{ booking.total_price|floatformat:0 }}{% endif %}
+</p>
+{% if booking.user_id %}
+<p><a href="{{ SITE_URL }}{% url 'accounts:booking_detail' booking.reference %}" style="color:#1646B2;">View your booking online</a></p>
+{% endif %}
+<p>Questions? Reply to this email or call {{ SITE.phone1 }}.</p>
+<p>Warm regards,<br>The MORTEL ADVENTURES team</p>
+{% endblock %}
