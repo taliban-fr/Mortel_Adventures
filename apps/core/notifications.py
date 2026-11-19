@@ -14,6 +14,8 @@ from apps.bookings.models import Booking
 from apps.contact.models import Enquiry
 from .context_processors import site_info
 
+from django.utils import timezone
+
 logger = logging.getLogger(__name__)
 
 
@@ -47,6 +49,8 @@ def remember_old_status(sender, instance, **kwargs):
         instance._old_status = Booking.objects.filter(pk=instance.pk).values_list('status', flat=True).first()
     else:
         instance._old_status = None
+    if instance.status == 'confirmed' and instance._old_status != 'confirmed':
+        instance.confirmed_at = timezone.now()
 
 
 @receiver(post_save, sender=Booking)

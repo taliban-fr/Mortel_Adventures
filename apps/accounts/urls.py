@@ -18,18 +18,14 @@ from django.contrib.auth import views as auth_views
 from django.urls import path
 
 from . import views
-from .forms import EmailLoginForm
-
 
 app_name = 'accounts'
 urlpatterns = [
     path('register/', views.register, name='register'),
-    path('login/', auth_views.LoginView.as_view(
-        template_name='accounts/login.html',
-        authentication_form=EmailLoginForm,
-        redirect_authenticated_user=True), name='login'),
+    path('login/', views.CustomLoginView.as_view(), name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('dashboard/', views.dashboard, name='dashboard'),
+    path('bookings/', views.my_bookings, name='bookings'),
     path('bookings/<str:reference>/', views.booking_detail, name='booking_detail'),
     path('bookings/<str:reference>/cancel/', views.cancel_booking, name='cancel_booking'),
     path('profile/', views.profile, name='profile'),

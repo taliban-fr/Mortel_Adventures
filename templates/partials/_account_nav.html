@@ -1,0 +1,15 @@
+<nav class="acct-nav" aria-label="Account navigation">
+  {% with current=request.resolver_match.url_name %}
+  <a href="{% url 'accounts:dashboard' %}" class="{% if current == 'dashboard' %}active{% endif %}"><i class="bi bi-house-door"></i> Dashboard</a>
+  <a href="{% url 'accounts:bookings' %}" class="{% if current == 'bookings' or current == 'booking_detail' %}active{% endif %}"><i class="bi bi-calendar-check"></i> My Bookings</a>
+  <a href="{% url 'accounts:profile' %}" class="{% if current == 'profile' or current == 'password_change' %}active{% endif %}"><i class="bi bi-person"></i> My Profile</a>
+  <a href="{% url 'contact:contact' %}"><i class="bi bi-headset"></i> Contact Support</a>
+  {% endwith %}
+</nav>
+<div class="acct-nav-bottom">
+  <a href="{% url 'core:home' %}"><i class="bi bi-globe2"></i> Visit Website</a>
+  <form method="post" action="{% url 'accounts:logout' %}">
+    {% csrf_token %}
+    <button type="submit"><i class="bi bi-box-arrow-right"></i> Logout</button>
+  </form>
+</div>

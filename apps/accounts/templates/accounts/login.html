@@ -1,27 +1,30 @@
-{% extends 'base.html' %}
+{% extends 'auth_base.html' %}
+{% load static %}
 {% block title %}Log In | MORTEL ADVENTURES{% endblock %}
 
-{% block content %}
-<section class="page-header">
-  <div class="container"><h1>Welcome Back</h1><p>Log in to view and manage your bookings.</p></div>
-</section>
+{% block auth_content %}
+<h1 class="auth-title">Welcome Back!</h1>
+<p class="auth-sub">Sign in to manage your adventures and bookings.</p>
 
-<section class="container my-5">
-  <div class="auth-card">
-    <form method="post" class="booking-card" novalidate>
-      {% csrf_token %}
-      {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
-      {% if form.non_field_errors %}<div class="alert alert-danger">{{ form.non_field_errors }}</div>{% endif %}
-      {% for field in form %}
-      <div class="mb-3">
-        <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
-        {{ field }}
-        {% for e in field.errors %}<div class="text-danger small mt-1">{{ e }}</div>{% endfor %}
-      </div>
-      {% endfor %}
-      <div class="d-grid"><button type="submit" class="btn btn-brand btn-lg">Log In</button></div>
-      <p class="text-center small mt-3 mb-0">New here? <a href="{% url 'accounts:register' %}">Create an account</a></p>
-    </form>
+<form method="post" novalidate>
+  {% csrf_token %}
+  {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
+  {% if form.non_field_errors %}<div class="alert alert-danger py-2 small">{{ form.non_field_errors }}</div>{% endif %}
+
+  {% include 'partials/_auth_field.html' with field=form.username %}
+  {% include 'partials/_auth_field.html' with field=form.password %}
+
+  <div class="auth-row">
+    <div class="form-check mb-0">
+      {{ form.remember_me }}
+      <label class="form-check-label" for="{{ form.remember_me.id_for_label }}">Remember me</label>
+    </div>
   </div>
-</section>
+
+  <button type="submit" class="btn-auth"><i class="bi bi-box-arrow-in-right"></i> Log In</button>
+</form>
+
+<p class="auth-switch">Don't have an account? <a href="{% url 'accounts:register' %}">Create Account</a></p>
 {% endblock %}
+
+{% block extra_js %}<script src="{% static 'js/auth.js' %}"></script>{% endblock %}

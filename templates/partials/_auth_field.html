@@ -1,0 +1,8 @@
+<div class="auth-field">
+  <label class="visually-hidden" for="{{ field.id_for_label }}">{{ field.label }}</label>
+  <div class="auth-input">
+    <i class="bi {% if field.name == 'username' or field.name == 'email' %}bi-envelope{% elif field.name == 'phone' %}bi-telephone{% elif field.name == 'password' or field.name == 'password1' or field.name == 'password2' %}bi-lock{% else %}bi-person{% endif %}"></i>
+    {{ field }}
+  </div>
+  {% for e in field.errors %}<div class="text-danger small mt-1">{{ e }}</div>{% endfor %}
+</div>

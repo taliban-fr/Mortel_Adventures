@@ -4,6 +4,7 @@ from django.shortcuts import get_object_or_404, render
 
 from .models import Destination, GalleryImage, Package, Service
 
+
 # Create your views here.
 
 def services(request):
@@ -19,15 +20,25 @@ def destinations(request):
     )
     return render(request, 'tours/destinations.html', {'destinations': destinations})
 
-
 def packages(request):
     selected = request.GET.get('destination', '')
     sort = request.GET.get('sort', '')
 
     qs = Package.objects.filter(is_available=True).select_related('destination')
+
     if selected:
         qs = qs.filter(destination__slug=selected)
 
+    # Search functionality
+    q = request.GET.get('q', '').strip()
+    if q:
+        qs = qs.filter(
+            Q(title__icontains=q) |
+            Q(destination_name_icontains=q) |
+            Q(destination_region_icontains=q)
+        )
+
+    # Sorting functionality
     if sort == 'price_asc':
         qs = qs.order_by('price')
     elif sort == 'price_desc':
@@ -40,18 +51,34 @@ def packages(request):
         'destinations': Destination.objects.all(),
         'selected': selected,
         'sort': sort,
+        'q': q,
     })
 
 
 def package_detail(request, slug):
     package = get_object_or_404(Package, slug=slug, is_available=True)
-    related = (Package.objects.filter(destination=package.destination, is_available=True)
-               .exclude(pk=package.pk)[:3])
-    return render(request, 'tours/package_detail.html', {'package': package, 'related': related})
+    related = (
+        Package.objects.filter(
+            destination=package.destination,
+            is_available=True
+        )
+        .exclude(pk=package.pk)[:3]
+    )
+    return render(request, 'tours/package_detail.html', {
+        'package': package,
+        'related': related
+    })
 
 
 def gallery(request):
     images = GalleryImage.objects.filter(is_published=True)
     used = set(images.values_list('category', flat=True))
-    categories = [(value, label) for value, label in GalleryImage.CATEGORY_CHOICES if value in used]
-    return render(request, 'tours/gallery.html', {'images': images, 'categories': categories})
+    categories = [
+        (value, label)
+        for value, label in GalleryImage.CATEGORY_CHOICES
+        if value in used
+    ]
+    return render(request, 'tours/gallery.html', {
+        'images': images,
+        'categories': categories
+    })

@@ -37,6 +37,7 @@ class Booking(models.Model):
     total_price = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True,
                                       help_text='Estimated total (KES). You can adjust it after agreeing a final price.')
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
+    confirmed_at = models.DateTimeField(null=True, blank=True, editable=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -73,3 +74,19 @@ class Booking(models.Model):
 
     def __str__(self):
         return f"{self.reference} · {self.full_name}"
+
+    @property
+    def display_title(self):
+        if self.package:
+            return self.package.title
+        if self.service:
+            return self.service.name
+        return 'Custom booking'
+
+    @property
+    def cover_image(self):
+        if self.package and self.package.cover_image:
+            return self.package.cover_image
+        if self.service and self.service.image:
+            return self.service.image
+        return None

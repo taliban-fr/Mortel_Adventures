@@ -1,49 +1,73 @@
-{% extends 'base.html' %}
+{% extends 'account_base.html' %}
 {% block title %}My Dashboard | MORTEL ADVENTURES{% endblock %}
 
-{% block content %}
-<section class="page-header">
-  <div class="container">
-    <h1>Hello, {{ user.first_name|default:user.username }}!</h1>
-    <p>Manage your bookings and account details.</p>
-  </div>
+{% block account_content %}
+<section class="welcome-banner">
+  <h1>Welcome back, {{ user.first_name|default:user.username }}!</h1>
+  <p>Manage your adventures and travel bookings.</p>
 </section>
 
-<section class="container my-5">
-  <div class="row g-3 mb-4">
-    <div class="col-4"><div class="stat-card"><h3>{{ total }}</h3><small>Total</small></div></div>
-    <div class="col-4"><div class="stat-card"><h3>{{ pending }}</h3><small>Pending</small></div></div>
-    <div class="col-4"><div class="stat-card"><h3>{{ confirmed }}</h3><small>Confirmed</small></div></div>
-  </div>
+<div class="row g-4">
+  <div class="col-xl-7">
 
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <h3 class="section-heading mb-0">My Bookings</h3>
-    <a href="{% url 'bookings:booking' %}" class="btn btn-brand btn-sm">New Booking</a>
-  </div>
+    <div class="acct-card">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="acct-card-title mb-0">Upcoming Adventure</h5>
+        {% if next_booking %}<span class="status-pill status-{{ next_booking.status }}">{{ next_booking.get_status_display }}</span>{% endif %}
+      </div>
 
-  {% for b in bookings %}
-  <div class="booking-row">
-    <div>
-      <strong>{{ b.package.title|default:b.service.name }}</strong><br>
-      <small class="text-muted">
-        {{ b.reference }} · {{ b.travel_date|date:"j M Y" }} · {{ b.travelers }} traveler{{ b.travelers|pluralize }}
-      </small>
+      {% if next_booking %}
+      <div class="trip-card">
+        <div class="trip-img">
+          {% if next_booking.cover_image %}<img src="{{ next_booking.cover_image.url }}" alt="{{ next_booking.display_title }}">{% else %}<i class="bi bi-compass"></i>{% endif %}
+        </div>
+        <div class="trip-info">
+          <h4>{{ next_booking.display_title }}</h4>
+          <ul class="trip-meta">
+            {% if next_booking.package %}
+            <li><i class="bi bi-geo-alt-fill"></i> {{ next_booking.package.destination.name }} · {{ next_booking.package.duration_days }} day{{ next_booking.package.duration_days|pluralize }}</li>
+            {% endif %}
+            <li><i class="bi bi-calendar-event"></i> Travel date: <strong>{{ next_booking.travel_date|date:"j F Y" }}</strong></li>
+            <li><i class="bi bi-people"></i> {{ next_booking.travelers }} traveler{{ next_booking.travelers|pluralize }}</li>
+          </ul>
+          <a href="{% url 'accounts:booking_detail' next_booking.reference %}" class="btn btn-blue btn-sm">View Booking <i class="bi bi-arrow-right"></i></a>
+        </div>
+      </div>
+      {% else %}
+      <p class="text-muted mb-3">You have no upcoming trips yet.</p>
+      <a href="{% url 'tours:packages' %}" class="btn btn-brand btn-sm">Browse Packages</a>
+      {% endif %}
     </div>
-    <div class="d-flex align-items-center gap-3">
-      <span class="status-pill status-{{ b.status }}">{{ b.get_status_display }}</span>
-      <a href="{% url 'accounts:booking_detail' b.reference %}" class="btn btn-outline-blue btn-sm">View</a>
+
+    <div class="acct-card mt-4">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <h5 class="acct-card-title mb-0">Recent Activity</h5>
+        {% if total %}<a href="{% url 'accounts:bookings' %}" class="small fw-semibold">View All →</a>{% endif %}
+      </div>
+      {% for a in activity %}
+      <a href="{{ a.url }}" class="activity-item">
+        <span class="activity-icon tone-{{ a.tone }}"><i class="bi {{ a.icon }}"></i></span>
+        <span class="activity-text"><strong>{{ a.title }}</strong><small>{{ a.detail }}</small></span>
+        <span class="activity-time">{{ a.when|date:"j M" }}</span>
+      </a>
+      {% empty %}
+      <p class="text-muted small mb-0">Your booking updates and payments will appear here.</p>
+      {% endfor %}
+    </div>
+
+  </div>
+
+  <div class="col-xl-5">
+    <div class="row g-3 mb-4">
+      <div class="col-6"><a href="{% url 'accounts:bookings' %}" class="stat-tile stat-blue"><i class="bi bi-calendar-check"></i><strong>{{ total }}</strong><span>My Bookings</span></a></div>
+      <div class="col-6"><a href="{% url 'accounts:bookings' %}" class="stat-tile stat-green"><i class="bi bi-airplane"></i><strong>{{ upcoming_count }}</strong><span>Upcoming Trips</span></a></div>
+    </div>
+
+    <div class="cta-tile">
+      <h5>Ready for your next adventure?</h5>
+      <p>Explore amazing travel packages and book your dream trip today.</p>
+      <a href="{% url 'tours:packages' %}" class="btn btn-brand btn-sm">Explore Tours <i class="bi bi-arrow-right"></i></a>
     </div>
   </div>
-  {% empty %}
-  <div class="booking-card text-center">
-    <p class="text-muted mb-3">You haven't made any bookings yet.</p>
-    <a href="{% url 'tours:packages' %}" class="btn btn-brand">Browse Packages</a>
-  </div>
-  {% endfor %}
-
-  <div class="mt-4 d-flex gap-2 flex-wrap">
-    <a href="{% url 'accounts:profile' %}" class="btn btn-outline-blue btn-sm"><i class="bi bi-person"></i> Edit profile</a>
-    <a href="{% url 'accounts:password_change' %}" class="btn btn-outline-blue btn-sm"><i class="bi bi-key"></i> Change password</a>
-  </div>
-</section>
+</div>
 {% endblock %}
